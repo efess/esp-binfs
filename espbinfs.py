@@ -26,7 +26,6 @@ class EspBinFS:
     @staticmethod
     def parse_arguments(args):
         try:
-            parsed_opts, parsed_args = getopt.getopt(args, "hmp:", ["help", "max-size=", 'path='])
             parsed_opts, parsed_args = getopt.getopt(args, "ho:m:p:", ["help","output=", "max-size=", 'path='])
         except getopt.GetoptError as ex:
             print ex.msg

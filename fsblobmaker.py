@@ -28,32 +28,32 @@ class FsBlobMaker:
         index_size = self.LENGTH_PATH + self.LENGTH_OFFSET + self.LENGTH_BYTE_LENGTH
         index_count = len(files)
 
-        data_offset = index_size * index_count
-        index_offset = 2
+        index_offset = 4
+        data_offset = index_offset + index_size * index_count
         try:
             with open(output_file, 'wb') as ofile:
-                
-                ofile.write(struct.pack(">H", len(files)))
+                ofile.seek(0)
+                ofile.write(struct.pack("<I", len(files)))
                 
                 for file in files:
                     ofile.seek(index_offset)
                     ofile.write(file['bin_path'])
                     ofile.seek(index_offset + self.LENGTH_PATH)
-                    ofile.write(struct.pack(">I", data_offset))
-                    ofile.write(struct.pack(">I", file['size']))
+                    ofile.write(struct.pack("<I", data_offset))
+                    ofile.write(struct.pack("<I", file['size']))
                     ofile.seek(data_offset)
                     try:
                         with open(file['file_path'], 'rb') as ifile:
                             self.copy_data(ofile, ifile, file['size'])
                     except IOError:
-                        print 'cannot open ', file['file_path'], ' for reading'
+                        print 'cannot open ' + file['file_path'] + ' for reading'
                         return
 
                     data_offset += file['size']
                     index_offset += index_size
                     
         except IOError:
-            print 'cannot open ', output_file, ' for writing'
+            print 'cannot open ' + output_file + ' for writing'
             return
         
         print 'Wrote ' + str(data_offset) + ' bytes to ' + output_file
@@ -81,7 +81,7 @@ class FsBlobMaker:
                 file_size = os.stat(file_path).st_size
 
                 if total_size > max_size:
-                    print "Directory size exceeds maximum at " str(total_size)
+                    print "Directory size exceeds maximum at " + str(total_size)
                     return []
 
                 bin_path = file_path.replace(root, '').replace('\\', '/')
