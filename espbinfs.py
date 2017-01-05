@@ -22,12 +22,12 @@ class EspBinFS:
         print "\t-p,--path\t\troot path to file system contents"
         print "\t-m,--max-size\t\tMaximum size of flash "
         print "\t-o,--output\t\tOutput file "
-        
 
     @staticmethod
     def parse_arguments(args):
         try:
             parsed_opts, parsed_args = getopt.getopt(args, "hmp:", ["help", "max-size=", 'path='])
+            parsed_opts, parsed_args = getopt.getopt(args, "ho:m:p:", ["help","output=", "max-size=", 'path='])
         except getopt.GetoptError as ex:
             print ex.msg
             exit(1)
@@ -35,7 +35,7 @@ class EspBinFS:
         # defaults
         options = {
             'usage': False,
-            'path': '/',
+            'path': './',
             'max_size': 524288,  # 512Kb
             'output': "espbinfs.bin"
         }

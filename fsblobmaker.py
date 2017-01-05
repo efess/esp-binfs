@@ -29,9 +29,12 @@ class FsBlobMaker:
         index_count = len(files)
 
         data_offset = index_size * index_count
-        index_offset = 0
+        index_offset = 2
         try:
             with open(output_file, 'wb') as ofile:
+                
+                ofile.write(struct.pack(">H", len(files)))
+                
                 for file in files:
                     ofile.seek(index_offset)
                     ofile.write(file['bin_path'])
@@ -52,6 +55,8 @@ class FsBlobMaker:
         except IOError:
             print 'cannot open ', output_file, ' for writing'
             return
+        
+        print 'Wrote ' + str(data_offset) + ' bytes to ' + output_file
     
     def copy_data(self, f_dest, f_src, size):
         buffer_size = 4096
@@ -66,17 +71,17 @@ class FsBlobMaker:
         index_size = self.LENGTH_PATH + self.LENGTH_OFFSET + self.LENGTH_BYTE_LENGTH
         total_size = 0
         files = []
-
+        
         for dirname, dirnames, filenames in os.walk(root):
 
             # print path to all filenames.
             for filename in filenames:
                 
-                file_path = os.path.join(dirname, filename)
+                file_path = os.path.join(dirname, filename)                
                 file_size = os.stat(file_path).st_size
 
                 if total_size > max_size:
-                    print "Directory size exceeds maximum " + total_size
+                    print "Directory size exceeds maximum at " str(total_size)
                     return []
 
                 bin_path = file_path.replace(root, '').replace('\\', '/')
@@ -96,9 +101,11 @@ class FsBlobMaker:
 
                 files.append(obj)
 
-        for obj in files:
-            print obj['bin_path'] + "  " + str(obj['size'])
+
+        #for obj in files:
+        #    print obj['bin_path'] + "  " + str(obj['size'])
         
-        print total_size
+
+        #print total_size
 
         return files
