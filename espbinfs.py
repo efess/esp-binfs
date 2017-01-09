@@ -17,18 +17,18 @@ class EspBinFS:
 
     @staticmethod
     def print_commandline_help():
-        print "Usage: espbinfs [options]"
-        print "\n\t-h,--help \t\tprint this help and exit"
-        print "\t-p,--path\t\troot path to file system contents"
-        print "\t-m,--max-size\t\tMaximum size of flash "
-        print "\t-o,--output\t\tOutput file "
+        print("Usage: espbinfs [options]")
+        print("\n\t-h,--help \t\tprint this help and exit")
+        print("\t-p,--path\t\troot path to file system contents")
+        print("\t-m,--max-size\t\tMaximum size of flash ")
+        print("\t-o,--output\t\tOutput file ")
 
     @staticmethod
     def parse_arguments(args):
         try:
             parsed_opts, parsed_args = getopt.getopt(args, "ho:m:p:", ["help","output=", "max-size=", 'path='])
         except getopt.GetoptError as ex:
-            print ex.msg
+            print(ex.msg)
             exit(1)
 
         # defaults
